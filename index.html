@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta name="cache-control" content="no-cache, no-store, must-revalidate, post-check=0, pre-check=0" />
+    <meta name="expires" content="Thu, 01 Jan 1970 00:00:00 GMT" />
+    <meta name="last-modified" content="Mon, 10 Feb 2025 14:30:00 GMT" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="TheBullTeam" />
+    <link rel="apple-touch-icon" href="./icons/The Bull-128.png" />
+    <title>TheBullTeam</title>
+    <link rel="icon" href="./icons/The Bull-128.png" sizes="128x128" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css?v=1672&t=20250214230000" />
+  </head>
+  <body>
+    <!-- Индикатор загрузки приложения -->
+    <div id="app-loader" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; display: flex; align-items: center; justify-content: center; z-index: 9999;">
+      <div style="text-align: center;">
+        <img src="./icons/The Bull-128.png" alt="TheBullTeam" style="width: 80px; height: 80px; margin-bottom: 20px; animation: pulse 1.5s ease-in-out infinite;" />
+        <div style="color: #fff; font-size: 18px; font-weight: 600;">TheBullTeam</div>
+        <div style="color: #94a3b8; font-size: 14px; margin-top: 8px;">Загрузка...</div>
+        <div style="color: #ef4444; font-size: 16px; margin-top: 16px; font-weight: 600;">ВЕРСИЯ 1.672</div>
+        <div style="color: #94a3b8; font-size: 12px; margin-top: 4px;">Все исправления применены</div>
+      </div>
+    </div>
+    
+    <!-- AUTH DISABLED: Authentication overlay commented out for deployment without backend
+    <div class="auth-overlay" id="auth-overlay">
+      <div class="auth-container">
+        <div class="auth-logo">
+          <img src="./icons/The Bull-128.png" alt="TheBullTeam" />
+        </div>
+        <h1 class="auth-title">
+          <span class="auth-title-bull">TheBull</span><span class="auth-title-team">Team</span> | Miraxa
+        </h1>
+        
+        <form class="auth-form" id="auth-form">
+          <input type="email" class="auth-input" id="auth-email" placeholder="Email" required />
+          <div class="auth-input-wrapper">
+            <input type="password" class="auth-input" id="auth-password" placeholder="Пароль" required />
+            <button type="button" class="auth-password-toggle" data-target="auth-password">
+              <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg class="eye-off-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
+          </div>
+          <button type="submit" class="auth-btn" id="auth-submit">Войти</button>
+        </form>
+        
+        <form class="auth-form" id="register-form">
+          <input type="text" class="auth-input" id="register-first-name" placeholder="Имя" required />
+          <input type="text" class="auth-input" id="register-last-name" placeholder="Фамилия" required />
+          <input type="email" class="auth-input" id="register-email" placeholder="Email" required />
+          <div class="auth-input-wrapper">
+            <input type="password" class="auth-input" id="register-password" placeholder="Пароль" required />
+            <button type="button" class="auth-password-toggle" data-target="register-password">
+              <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg class="eye-off-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
+          </div>
+          <div class="auth-input-wrapper">
+            <input type="password" class="auth-input" id="register-password-confirm" placeholder="Подтвердите пароль" required />
+            <button type="button" class="auth-password-toggle" data-target="register-password-confirm">
+              <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg class="eye-off-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
+          </div>
+          <input type="text" class="auth-input" id="register-location-code" placeholder="Код точки (invite code)" required />
+          <select class="auth-input" id="register-role" style="display: none;">
+            <option value="официант" selected>Официант</option>
+          </select>
+          <button type="submit" class="auth-btn" id="register-submit">Зарегистрироваться</button>
+        </form>
+        
+        <a href="#" class="auth-forgot" id="auth-forgot">Забыли пароль?</a>
+        
+        <div class="auth-register-link" id="auth-toggle-register">
+          Нет аккаунта? <a href="#" id="auth-register-link">Зарегистрироваться</a>
+        </div>
+        
+        <div class="auth-register-link" id="auth-toggle-login">
+          Уже есть аккаунт? <a href="#" id="auth-login-link">Войти</a>
+        </div>
+      </div>
+    </div>
+    END AUTH DISABLED -->
+
+    <header class="app-header">
+      <button id="btn-install" class="btn secondary" hidden>Установить</button>
+    </header>
+    <main class="container" id="app">
+      <div style="padding: 40px; text-align: center; color: white;">
+        <h1>Загрузка приложения...</h1>
+        <p>Пожалуйста, подождите.</p>
+      </div>
+    </main>
+    <nav class="bottom-nav">
+      <button class="nav-item" data-page="profile"><div class="nav-icon">👤</div><span>Профиль</span></button>
+      <button class="nav-item" data-page="tools"><div class="nav-icon">🛠️</div><span>Инструменты</span></button>
+      <button class="nav-item active" data-page="tables"><div class="nav-icon">🐂</div><span>Столы</span></button>
+      <button class="nav-item" data-page="learn"><div class="nav-icon">📚</div><span>Изучение</span></button>
+      <button class="nav-item" data-page="settings"><div class="nav-icon">⚙️</div><span>Настройки</span></button>
+    </nav>
+    <footer class="app-footer"></footer>
+
+    <!-- 1. Константы (загружаются первыми) -->
+    <script src="./js/1-core/constants.js?v=1649&t=20250213120000"></script>
+
+    <!-- 2. Глобальное состояние -->
+    <script src="./js/1-core/state.js?v=1649&t=20250213120000"></script>
+
+    <!-- 3. Вспомогательные функции -->
+    <script src="./js/2-utils/helpers.js?v=1649&t=20250213120000"></script>
+    <script src="./js/2-utils/dish-helpers.js?v=1649&t=20250213120000"></script>
+    <script src="./js/2-utils/date-utils.js?v=1649&t=20250213120000"></script>
+
+    <!-- 4. Данные -->
+    <script src="./data/dishes-data.js?v=26"></script>
+    <script src="./data/bar_drinks.js?v=26"></script>
+    <script src="./data/extra-dishes-config.js?v=1"></script>
+    <script src="./data/training-data.js?v=25"></script>
+
+    <!-- 5. Профиль и обучение -->
+    <script src="./js/4-profile/salary.js?v=1630"></script>
+    <script src="./js/6-learning/learning-progress.js?v=1630"></script>
+
+    <!-- 6. Столы -->
+    <script src="./js/3-tables/table-manager.js?v=1630"></script>
+
+    <!-- 7. Настройки -->
+    <script src="./js/5-settings/settings-view.js?v=1630"></script>
+    <script src="./js/5-settings/course-settings.js?v=1630"></script>
+    <script src="./js/5-settings/additional-sales-settings.js?v=1672&t=20250214230000"></script>
+    <script src="./js/5-settings/stop-list-settings.js?v=1672&t=20250214230000"></script>
+    <script src="./js/5-settings/order-history.js?v=1630"></script>
+
+    <!-- 8. Модальные окна -->
+    <script src="./js/7-modals/common-modals.js?v=1630"></script>
+    <script src="./js/7-modals/cooking-modal.js?v=1630"></script>
+    <script src="./js/7-modals/garnish-modal.js?v=1630"></script>
+    <script src="./js/7-modals/sauce-modal.js?v=1630"></script>
+    <script src="./js/7-modals/extra-dish-modal.js?v=1630"></script>
+    <script src="./js/3-tables/additional-sales.js?v=1650&t=20250213130000"></script>
+
+    <!-- 9. Storage (после всех утилит и модалей) -->
+    <script src="./js/1-core/storage.js?v=1649&t=20250213120000"></script>
+
+    <!-- 10. Старый app.js (временно оставляем) -->
+    <script src="./app.js?v=1672&t=20250214230000" defer></script>
+    
+    <script>
+      // Force reload Service Worker
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+          registrations.forEach(registration => {
+            registration.unregister();
+            console.log('Service Worker unregistered');
+          });
+        });
+        
+        // Clear all caches
+        if ('caches' in window) {
+          caches.keys().then(names => {
+            names.forEach(name => {
+              caches.delete(name);
+              console.log('Cache deleted:', name);
+            });
+          });
+        }
+      }
+      
+      // Hide app loader when everything is loaded
+      window.addEventListener('load', () => {
+        const loader = document.getElementById('app-loader');
+        if (loader) {
+          setTimeout(() => {
+            loader.style.display = 'none';
+          }, 1000);
+        }
+      });
+    </script>
+  </body>
+</html>
