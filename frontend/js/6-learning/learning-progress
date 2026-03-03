@@ -1,0 +1,82 @@
+/* Learning Progress - Прогресс обучения */
+/* Версия: 1.63.0 */
+
+// Расчёт общего прогресса обучения
+function calculateOverallProgress() {
+  if (!window.TRAINING_DATA) return 0;
+  let total = 0;
+  let completed = 0;
+  
+  window.TRAINING_DATA.sections.forEach(section => {
+    section.topics.forEach(topic => {
+      total++;
+      if (learningProgress[section.id]?.[topic.id]) completed++;
+    });
+  });
+  
+  return total > 0 ? Math.round((completed / total) * 100) : 0;
+}
+
+// Добавление опыта (XP) с системой уровней
+function addXP(amount) {
+  learningXP += amount;
+  
+  // Система уровней: 1-10, каждый уровень требует больше XP
+  const xpForNextLevel = learningLevel * 100;
+  if (learningXP >= xpForNextLevel && learningLevel < 10) {
+    learningLevel++;
+    learningXP = learningXP - xpForNextLevel;
+    saveLearningLevel();
+  }
+  
+  saveLearningXP();
+  return { leveledUp: learningXP >= xpForNextLevel, newLevel: learningLevel };
+}
+
+// Получение информации об уровне
+function getLevelInfo() {
+  const xpForNext = learningLevel * 100;
+  const progress = learningLevel >= 10 ? 100 : Math.round((learningXP / xpForNext) * 100);
+  const titles = ['', 'Стажёр', 'Новичок', 'Практикант', 'Официант', 'Профессионал', 'Эксперт', 'Мастер', 'Гуру', 'Легенда', 'Супер-звезда'];
+  const achievementTitles = ['', 'Trainee', 'Waiter', 'Senior Waiter', 'Junior Sommelier', 'Sommelier', 'Senior Sommelier', 'Master', 'Expert', 'Legend', 'Superstar'];
+  
+  return {
+    level: learningLevel,
+    xp: learningXP,
+    xpForNext,
+    progress,
+    title: titles[learningLevel] || 'Официант',
+    achievementTitle: achievementTitles[learningLevel] || 'Waiter'
+  };
+}
+
+// Расчёт прогресса категории
+function calculateCategoryProgress(categoryId) {
+  if (!window.TRAINING_DATA) return 0;
+  
+  const section = window.TRAINING_DATA.sections.find(s => s.id === categoryId);
+  if (!section) return 0;
+  
+  let total = section.topics.length;
+  let completed = 0;
+  
+  section.topics.forEach(topic => {
+    if (learningProgress[section.id]?.[topic.id]) completed++;
+  });
+  
+  return total > 0 ? Math.round((completed / total) * 100) : 0;
+}
+
+// Расчёт прогресса модуля
+function calculateModuleProgress(moduleId) {
+  // Расчёт прогресса для каждой карточки модуля
+  if (moduleId === 'dishes') {
+    return calculateCategoryProgress('dishes');
+  } else if (moduleId === 'drinks') {
+    return calculateCategoryProgress('drinks');
+  } else if (moduleId === 'service') {
+    return calculateCategoryProgress('service');
+  }
+  
+  return 0;
+}
