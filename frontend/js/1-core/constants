@@ -1,0 +1,86 @@
+/* Constants - Константы приложения */
+/* Версия: 1.64.4 */
+
+// Ключи для localStorage
+const STORAGE_KEYS = {
+  tableOrders: 'waiter.tableOrders',
+  tables: 'waiter.tables',
+  tableMode: 'waiter.tableMode',
+  tableNames: 'waiter.tableNames',
+  orderHistory: 'waiter.orderHistory',
+  meta: 'waiter.meta',
+  activePage: 'waiter.activePage',
+  profile: 'waiter.profile',
+  searchFilters: 'waiter.searchFilters',
+  learnProgress: 'waiter.learnProgress',
+  categoryGrouping: 'waiter.categoryGrouping',
+  courseMode: 'waiter.courseMode',
+  learningProgress: 'waiter.learningProgress',
+  learningLevel: 'waiter.learningLevel',
+  learningXP: 'waiter.learningXP',
+  shifts: 'waiter.shifts',
+  darkMode: 'waiter.darkMode',
+  dishChain: 'waiter.dishChain',
+  stopList: 'waiter.stopList',
+  // AUTH DISABLED: Auth session storage key commented out
+  // authSession: 'waiter.authSession'
+};
+
+// Конфигурация категорий блюд
+const CATEGORY_CONFIG = {
+  1: { key: 'drinks', label: 'Напитки' },
+  2: { key: 'cold', label: 'Холодные блюда и закуски' },
+  3: { key: 'hot', label: 'Горячие блюда' },
+  4: { key: 'dessert', label: 'Десерты' }
+};
+
+// Обратная карта категорий (ключ → ID)
+const CATEGORY_KEYS = Object.fromEntries(
+  Object.entries(CATEGORY_CONFIG).map(([id, cfg]) => [cfg.key, Number(id)])
+);
+
+// Гарниры для стейков
+const STEAK_GARNISHES = [
+  { name: 'Овощи гриль', rkeeper: '239', price: '350/400 рублей', emoji: '🥗', image: 'Pictures/menu/Гарниры/Овощи-гриль.jpg' },
+  { name: 'Брокколи', rkeeper: '236', price: '350/400 рублей', emoji: '🥦', image: 'Pictures/menu/Гарниры/Брокколи.jpg' },
+  { name: 'Рис с овощами', rkeeper: '559', price: '350/400 рублей', emoji: '🍚', image: 'Pictures/menu/Гарниры/Рис-с-овощами.jpg' },
+  { name: 'Картофель фри', rkeeper: '233', price: '350/400 рублей', emoji: '🍟', image: 'Pictures/menu/Гарниры/Картофель-фри.jpg' },
+  { name: 'Фри с пармезаном', rkeeper: '29', price: '350/400 рублей', emoji: '🧀', image: 'Pictures/menu/Гарниры/Картофель-фри-с-пармезаном.jpg' },
+  { name: 'Батат фри', rkeeper: '655', price: '350/400 рублей', emoji: '🍠', image: 'Pictures/menu/Гарниры/Картофель-батат-фри.jpg' },
+  { name: 'Картофельные дипперы', rkeeper: '291', price: '350/400 рублей', emoji: '🥔', image: 'Pictures/menu/Гарниры/Картофель-диппер.jpg' },
+  { name: 'Картофельное пюре', rkeeper: '1083', price: '350/400 рублей', emoji: '🫕', image: 'Pictures/menu/Гарниры/Картофельное-пюре.jpg' }
+];
+
+// Соусы для стейков
+const STEAK_SAUCES = [
+  { name: 'Брусничный', rkeeper: '440', price: '70', emoji: '🫐', image: 'Pictures/menu/Соусы/Соусы.jpg' },
+  { name: 'Перечный', rkeeper: '341', price: '70', emoji: '🫑', image: 'Pictures/menu/Соусы/Соусы.jpg' },
+  { name: 'Грибной', rkeeper: '753', price: '70', emoji: '🍄', image: 'Pictures/menu/Соусы/Соусы.jpg' },
+  { name: 'Сальса', rkeeper: '494', price: '70', emoji: '🍅', image: 'Pictures/menu/Соусы/Соусы.jpg' },
+  { name: 'Джек Дэниелс', rkeeper: '581', price: '70', emoji: '🥃', image: 'Pictures/menu/Соусы/Соусы.jpg' },
+  { name: 'Медово-горчичный', rkeeper: '495', price: '70', emoji: '🍯', image: 'Pictures/menu/Соусы/Соусы.jpg' },
+  { name: '1000 островов', rkeeper: '366', price: '70', emoji: '🏝️', image: 'Pictures/menu/Соусы/Соусы.jpg' },
+  { name: 'Сладкий чили', rkeeper: '368', price: '70', emoji: '🌶️', image: 'Pictures/menu/Соусы/Соусы.jpg' },
+  { name: 'Барбекю', rkeeper: '342', price: '70', emoji: '🔥', image: 'Pictures/menu/Соусы/Соусы.jpg' },
+  { name: 'Кетчуп', rkeeper: '343', price: '70', emoji: '🥫', image: 'Pictures/menu/Соусы/Соусы.jpg' },
+  { name: 'Сырный', rkeeper: '115', price: '70', emoji: '🧀', image: 'Pictures/menu/Соусы/Соусы.jpg' }
+];
+
+// Категории альтернативных стейков (без выбора прожарки)
+const STEAK_CATEGORIES_WITHOUT_COOKING = ['Альтернативные стейки'];
+
+// Стейки из категории "Прайм" которые требуют выбор прожарки
+// ВАЖНО: Названия должны точно совпадать с названиями в dishes-data.js
+const PRIME_STEAKS_WITH_COOKING = [
+  'Стейк Рибай (зерно)',
+  'Стейк Стриплойн (зерно)', 
+  'Стейк Филе Миньон (травяной)',
+  'Стейк Шато Бриан',
+  'Стейк The Бык Кинг Сайз травяной',
+  'Стейк Рибай (трава)',
+  'Нью-Йорк травяной',
+  'Стейк Бавет зерновой'
+];
+
+// Версия приложения
+const APP_VERSION = '1.672';
