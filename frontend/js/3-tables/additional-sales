@@ -1,0 +1,1127 @@
+/* Additional Sales - Дополнительные продажи */
+/* Модальные окна для выбора вкусов напитков и цепочка стейк → прожарка → гарнир → соус */
+
+// Ice cream flavor selection modal
+function showIceCreamFlavorModal(dishName, callback) {
+  const flavors = {
+    vanilla: { name: 'Ваниль', emoji: '🤍' },
+    chocolate: { name: 'Шоколад', emoji: '🤎' },
+    strawberry: { name: 'Клубника', emoji: '🩷' }
+  };
+  
+  let selectedFlavors = { vanilla: 0, chocolate: 0, strawberry: 0 };
+  let totalScoops = 0;
+  
+  const modal = document.createElement('div');
+  modal.className = 'rename-modal ice-cream-modal';
+  modal.innerHTML = `
+    <div class="rename-content ice-cream-content">
+      <div class="rename-title">Выберите вкусы мороженого</div>
+      <div class="ice-cream-dish">${dishName}</div>
+      <div class="ice-cream-subtitle">Выберите 3 шарика (можно одинаковые)</div>
+      
+      <div class="ice-cream-flavors">
+        <div class="ice-cream-flavor-item" data-flavor="vanilla">
+          <div class="flavor-name">${flavors.vanilla.emoji} ${flavors.vanilla.name}</div>
+          <div class="flavor-controls">
+            <button class="flavor-btn flavor-minus" data-flavor="vanilla">−</button>
+            <span class="flavor-count" data-flavor="vanilla">0</span>
+            <button class="flavor-btn flavor-plus" data-flavor="vanilla">+</button>
+          </div>
+        </div>
+        
+        <div class="ice-cream-flavor-item" data-flavor="chocolate">
+          <div class="flavor-name">${flavors.chocolate.emoji} ${flavors.chocolate.name}</div>
+          <div class="flavor-controls">
+            <button class="flavor-btn flavor-minus" data-flavor="chocolate">−</button>
+            <span class="flavor-count" data-flavor="chocolate">0</span>
+            <button class="flavor-btn flavor-plus" data-flavor="chocolate">+</button>
+          </div>
+        </div>
+        
+        <div class="ice-cream-flavor-item" data-flavor="strawberry">
+          <div class="flavor-name">${flavors.strawberry.emoji} ${flavors.strawberry.name}</div>
+          <div class="flavor-controls">
+            <button class="flavor-btn flavor-minus" data-flavor="strawberry">−</button>
+            <span class="flavor-count" data-flavor="strawberry">0</span>
+            <button class="flavor-btn flavor-plus" data-flavor="strawberry">+</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="ice-cream-total">Выбрано шариков: <span id="total-scoops">0</span> / 3</div>
+      
+      <div class="ice-cream-actions">
+        <button class="btn secondary" id="ice-cream-cancel">Отмена</button>
+        <button class="btn primary" id="ice-cream-confirm" disabled>Подтвердить</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  const updateTotal = () => {
+    totalScoops = selectedFlavors.vanilla + selectedFlavors.chocolate + selectedFlavors.strawberry;
+    modal.querySelector('#total-scoops').textContent = totalScoops;
+    modal.querySelector('#ice-cream-confirm').disabled = totalScoops !== 3;
+  };
+  
+  // Plus buttons
+  modal.querySelectorAll('.flavor-plus').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const flavor = btn.dataset.flavor;
+      if (totalScoops < 3) {
+        selectedFlavors[flavor]++;
+        modal.querySelector(`.flavor-count[data-flavor="${flavor}"]`).textContent = selectedFlavors[flavor];
+        updateTotal();
+      }
+    });
+  });
+  
+  // Minus buttons
+  modal.querySelectorAll('.flavor-minus').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const flavor = btn.dataset.flavor;
+      if (selectedFlavors[flavor] > 0) {
+        selectedFlavors[flavor]--;
+        modal.querySelector(`.flavor-count[data-flavor="${flavor}"]`).textContent = selectedFlavors[flavor];
+        updateTotal();
+      }
+    });
+  });
+  
+  // Confirm button
+  modal.querySelector('#ice-cream-confirm').addEventListener('click', () => {
+    const flavorText = [];
+    if (selectedFlavors.vanilla > 0) flavorText.push(`${flavors.vanilla.name} x${selectedFlavors.vanilla}`);
+    if (selectedFlavors.chocolate > 0) flavorText.push(`${flavors.chocolate.name} x${selectedFlavors.chocolate}`);
+    if (selectedFlavors.strawberry > 0) flavorText.push(`${flavors.strawberry.name} x${selectedFlavors.strawberry}`);
+    
+    const result = flavorText.join(', ');
+    console.log('Ice cream modal confirm - flavorText:', result);
+    document.body.removeChild(modal);
+    callback(result);
+  });
+  
+  // Cancel button
+  modal.querySelector('#ice-cream-cancel').addEventListener('click', () => {
+    document.body.removeChild(modal);
+  });
+  
+  // Close on outside click
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      document.body.removeChild(modal);
+    }
+  });
+}
+
+// Juice flavor selection modal
+function showJuiceFlavorModal(dishName, callback) {
+  const flavors = [
+    { id: 'apple', name: 'Яблоко', emoji: '🍏' },
+    { id: 'orange', name: 'Апельсин', emoji: '🍊' },
+    { id: 'cherry', name: 'Вишня', emoji: '🍒' },
+    { id: 'tomato', name: 'Томат', emoji: '🍅' }
+  ];
+  
+  const modal = document.createElement('div');
+  modal.className = 'rename-modal ice-cream-modal';
+  modal.innerHTML = `
+    <div class="rename-content ice-cream-content">
+      <div class="rename-title">Выберите вкус сока</div>
+      <div class="ice-cream-dish">${dishName}</div>
+      
+      <div class="ice-cream-flavors juice-flavors">
+        ${flavors.map(f => `
+          <div class="juice-flavor-item" data-flavor="${f.id}">
+            <span class="flavor-emoji">${f.emoji}</span>
+            <span class="flavor-name">${f.name}</span>
+          </div>
+        `).join('')}
+      </div>
+      
+      <div class="ice-cream-actions">
+        <button class="btn secondary" id="juice-cancel">Отмена</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Flavor selection
+  modal.querySelectorAll('.juice-flavor-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const flavorId = item.dataset.flavor;
+      const flavor = flavors.find(f => f.id === flavorId);
+      document.body.removeChild(modal);
+      callback(flavor.name);
+    });
+  });
+  
+  // Cancel button
+  modal.querySelector('#juice-cancel').addEventListener('click', () => {
+    document.body.removeChild(modal);
+  });
+  
+  // Close on outside click
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      document.body.removeChild(modal);
+    }
+  });
+}
+
+// Red Bull flavor selection modal
+function showRedBullFlavorModal(dishName, callback) {
+  const flavors = [
+    { id: 'energy', name: 'Energy Drink', emoji: '⚡' },
+    { id: 'sugarfree', name: 'Sugarfree (Без сахара)', emoji: '💚' },
+    { id: 'red', name: 'The Red Edition', emoji: '❤️' }
+  ];
+  
+  const modal = document.createElement('div');
+  modal.className = 'rename-modal ice-cream-modal';
+  modal.innerHTML = `
+    <div class="rename-content ice-cream-content">
+      <div class="rename-title">Выберите вид Red Bull</div>
+      <div class="ice-cream-dish">${dishName}</div>
+      
+      <div class="ice-cream-flavors juice-flavors">
+        ${flavors.map(f => `
+          <div class="juice-flavor-item" data-flavor="${f.id}">
+            <span class="flavor-emoji">${f.emoji}</span>
+            <span class="flavor-name">${f.name}</span>
+          </div>
+        `).join('')}
+      </div>
+      
+      <div class="ice-cream-actions">
+        <button class="btn secondary" id="redbull-cancel">Отмена</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Flavor selection
+  modal.querySelectorAll('.juice-flavor-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const flavorId = item.dataset.flavor;
+      const flavor = flavors.find(f => f.id === flavorId);
+      document.body.removeChild(modal);
+      callback(flavor.name);
+    });
+  });
+  
+  // Cancel button
+  modal.querySelector('#redbull-cancel').addEventListener('click', () => {
+    document.body.removeChild(modal);
+  });
+  
+  // Close on outside click
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      document.body.removeChild(modal);
+    }
+  });
+}
+
+// Green/Herbal tea flavor selection modal
+function showGreenTeaFlavorModal(dishName, callback) {
+  const flavors = [
+    { id: 'sencha', name: 'Сенча', emoji: '🍃' },
+    { id: 'jasmine', name: 'Жасмин', emoji: '🌸' },
+    { id: 'oolong', name: 'Молочный Улун', emoji: '🥛' },
+    { id: 'taiga', name: 'Таёжный', emoji: '🌲' },
+    { id: 'chamomile', name: 'Ромашковый', emoji: '🌼' },
+    { id: 'buckwheat', name: 'Гречишный', emoji: '🌾' }
+  ];
+  
+  const modal = document.createElement('div');
+  modal.className = 'rename-modal ice-cream-modal';
+  modal.innerHTML = `
+    <div class="rename-content ice-cream-content">
+      <div class="rename-title">Выберите вкус чая</div>
+      <div class="ice-cream-dish">${dishName}</div>
+      
+      <div class="ice-cream-flavors juice-flavors tea-flavors">
+        ${flavors.map(f => `
+          <div class="juice-flavor-item" data-flavor="${f.id}">
+            <span class="flavor-emoji">${f.emoji}</span>
+            <span class="flavor-name">${f.name}</span>
+          </div>
+        `).join('')}
+      </div>
+      
+      <div class="ice-cream-actions">
+        <button class="btn secondary" id="tea-cancel">Отмена</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Flavor selection
+  modal.querySelectorAll('.juice-flavor-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const flavorId = item.dataset.flavor;
+      const flavor = flavors.find(f => f.id === flavorId);
+      document.body.removeChild(modal);
+      callback(flavor.name);
+    });
+  });
+  
+  // Cancel button
+  modal.querySelector('#tea-cancel').addEventListener('click', () => {
+    document.body.removeChild(modal);
+  });
+  
+  // Close on outside click
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      document.body.removeChild(modal);
+    }
+  });
+}
+
+// Black/Fruit tea flavor selection modal
+function showBlackTeaFlavorModal(dishName, callback) {
+  const flavors = [
+    { id: 'assam', name: 'Ассам', emoji: '🫖' },
+    { id: 'earlgrey', name: 'Эрл Грей', emoji: '🍋' },
+    { id: 'fruitpunch', name: 'Фруктовый пунш', emoji: '🍹' },
+    { id: 'ceylon', name: 'Цейлонский с чабрецом', emoji: '🌿' }
+  ];
+  
+  const modal = document.createElement('div');
+  modal.className = 'rename-modal ice-cream-modal';
+  modal.innerHTML = `
+    <div class="rename-content ice-cream-content">
+      <div class="rename-title">Выберите вкус чая</div>
+      <div class="ice-cream-dish">${dishName}</div>
+      
+      <div class="ice-cream-flavors juice-flavors">
+        ${flavors.map(f => `
+          <div class="juice-flavor-item" data-flavor="${f.id}">
+            <span class="flavor-emoji">${f.emoji}</span>
+            <span class="flavor-name">${f.name}</span>
+          </div>
+        `).join('')}
+      </div>
+      
+      <div class="ice-cream-actions">
+        <button class="btn secondary" id="tea-cancel">Отмена</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Flavor selection
+  modal.querySelectorAll('.juice-flavor-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const flavorId = item.dataset.flavor;
+      const flavor = flavors.find(f => f.id === flavorId);
+      document.body.removeChild(modal);
+      callback(flavor.name);
+    });
+  });
+  
+  // Cancel button
+  modal.querySelector('#tea-cancel').addEventListener('click', () => {
+    document.body.removeChild(modal);
+  });
+  
+  // Close on outside click
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      document.body.removeChild(modal);
+    }
+  });
+}
+
+// Garnish selection modal for steak chain
+function showGarnishModal(steakName, callback) {
+  const modal = document.createElement('div');
+  modal.className = 'rename-modal chain-modal';
+  modal.innerHTML = `
+    <div class="chain-content">
+      <div class="chain-header">
+        <div class="chain-step-indicator">
+          <span class="step-dot completed"></span>
+          <span class="step-line completed"></span>
+          <span class="step-dot active"></span>
+          <span class="step-line"></span>
+          <span class="step-dot"></span>
+        </div>
+        <span class="chain-step-text">Шаг 2 из 3</span>
+        <h2 class="chain-title">Гарнир к стейку</h2>
+        <p class="chain-subtitle">Выберите гарнир или пропустите этот шаг</p>
+      </div>
+      
+      <div class="chain-list-vertical">
+        ${STEAK_GARNISHES.map(g => `
+          <button class="chain-list-btn" data-name="${g.name}" data-rkeeper="${g.rkeeper}" data-price="${g.price}">
+            <span class="chain-btn-emoji">${g.emoji}</span>
+            <span class="chain-btn-name">${g.name}</span>
+          </button>
+        `).join('')}
+      </div>
+      
+      <button class="chain-skip-btn" id="garnish-skip">Пропустить</button>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Garnish selection
+  modal.querySelectorAll('.chain-list-btn').forEach(item => {
+    item.addEventListener('click', () => {
+      const garnish = {
+        name: item.dataset.name,
+        rkeeper: item.dataset.rkeeper,
+        price: item.dataset.price
+      };
+      document.body.removeChild(modal);
+      callback(garnish);
+    });
+  });
+  
+  // Skip button
+  modal.querySelector('#garnish-skip').addEventListener('click', () => {
+    document.body.removeChild(modal);
+    callback(null);
+  });
+  
+  // Close on outside click
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      document.body.removeChild(modal);
+      callback(null);
+    }
+  });
+}
+
+// Sauce selection modal for steak chain
+function showSauceModal(steakName, callback) {
+  const modal = document.createElement('div');
+  modal.className = 'rename-modal chain-modal';
+  modal.innerHTML = `
+    <div class="chain-content">
+      <div class="chain-header">
+        <div class="chain-step-indicator">
+          <span class="step-dot completed"></span>
+          <span class="step-line completed"></span>
+          <span class="step-dot completed"></span>
+          <span class="step-line completed"></span>
+          <span class="step-dot active"></span>
+        </div>
+        <span class="chain-step-text">Шаг 3 из 3</span>
+        <h2 class="chain-title">Соус к стейку</h2>
+        <p class="chain-subtitle">Выберите соус или пропустите этот шаг</p>
+      </div>
+      
+      <div class="chain-list-vertical">
+        ${STEAK_SAUCES.map(s => `
+          <button class="chain-list-btn" data-name="${s.name}" data-rkeeper="${s.rkeeper}" data-price="${s.price}">
+            <span class="chain-btn-emoji">${s.emoji}</span>
+            <span class="chain-btn-name">${s.name}</span>
+          </button>
+        `).join('')}
+      </div>
+      
+      <button class="chain-skip-btn" id="sauce-skip">Пропустить</button>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Sauce selection
+  modal.querySelectorAll('.chain-list-btn').forEach(item => {
+    item.addEventListener('click', () => {
+      const sauce = {
+        name: item.dataset.name,
+        rkeeper: item.dataset.rkeeper,
+        price: item.dataset.price
+      };
+      document.body.removeChild(modal);
+      callback(sauce);
+    });
+  });
+  
+  // Skip button
+  modal.querySelector('#sauce-skip').addEventListener('click', () => {
+    document.body.removeChild(modal);
+    callback(null);
+  });
+  
+  // Close on outside click
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      document.body.removeChild(modal);
+      callback(null);
+    }
+  });
+}
+
+// Full steak chain: Cooking Level (for classic) -> Garnish -> Sauce
+function showSteakChain(dish, tableNumber, onComplete) {
+  const isAlternative = isAlternativeSteak(dish.name);
+  
+  const steakOrder = {
+    dish: dish,
+    cookingLevel: null,
+    garnish: null,
+    sauce: null
+  };
+  
+  // Function to continue with garnish/sauce chain
+  const continueWithGarnishSauce = () => {
+    // Step: Garnish (if enabled)
+    if (dishChainSettings.steaks.garnishes) {
+      showGarnishModal(dish.name, (garnish) => {
+        steakOrder.garnish = garnish;
+        
+        // Step: Sauce (if enabled)
+        if (dishChainSettings.steaks.sauces) {
+          showSauceModal(dish.name, (sauce) => {
+            steakOrder.sauce = sauce;
+            onComplete(steakOrder);
+          });
+        } else {
+          onComplete(steakOrder);
+        }
+      });
+    } else if (dishChainSettings.steaks.sauces) {
+      // Skip garnish, go to sauce
+      showSauceModal(dish.name, (sauce) => {
+        steakOrder.sauce = sauce;
+        onComplete(steakOrder);
+      });
+    } else {
+      // No chain options enabled
+      onComplete(steakOrder);
+    }
+  };
+  
+  // Alternative steaks: skip cooking level, go directly to garnish/sauce
+  if (isAlternative) {
+    continueWithGarnishSauce();
+  } else {
+    // Classic steaks: start with cooking level
+    showCookingLevelModal(dish.name, (cookingLevel) => {
+      if (!cookingLevel) {
+        return; // Cancelled
+      }
+      steakOrder.cookingLevel = cookingLevel;
+      continueWithGarnishSauce();
+    });
+  }
+}
+
+
+// Tea selection modal - TWO STEPS: 1) Select tea type, 2) Select addons
+function showTeaAddonsModal(dishName, callback) {
+  // Step 1: Select specific tea type
+  const teaTypes = dishName.includes('ЗЕЛЕНЫЙ') ? [
+    { id: 'sencha', name: 'Сенча', emoji: '🍵' },
+    { id: 'jasmine', name: 'Жасмин', emoji: '🌸' },
+    { id: 'oolong', name: 'Молочный Улун', emoji: '🥛' },
+    { id: 'taiga', name: 'Таёжный', emoji: '🌲' },
+    { id: 'chamomile', name: 'Ромашковый', emoji: '🌼' },
+    { id: 'buckwheat', name: 'Гречишный', emoji: '🌾' }
+  ] : [
+    { id: 'assam', name: 'Ассам', emoji: '☕' },
+    { id: 'earl-grey', name: 'Эрл Грей', emoji: '🫖' },
+    { id: 'fruit-punch', name: 'Фруктовый пунш', emoji: '🍓' },
+    { id: 'ceylon', name: 'Цейлонский с чабрецом', emoji: '🌿' }
+  ];
+  
+  let selectedTeaType = null;
+  
+  const modal = document.createElement('div');
+  modal.className = 'rename-modal ice-cream-modal';
+  modal.innerHTML = `
+    <div class="rename-content ice-cream-content">
+      <div class="rename-title">Выбор чая</div>
+      <div class="ice-cream-dish">${dishName}</div>
+      <div class="ice-cream-subtitle">Выберите конкретный вид чая</div>
+      
+      <div class="ice-cream-flavors juice-flavors">
+        ${teaTypes.map(tea => `
+          <div class="juice-flavor-item tea-type-item" data-tea="${tea.id}">
+            <span class="flavor-emoji">${tea.emoji}</span>
+            <span class="flavor-name">${tea.name}</span>
+          </div>
+        `).join('')}
+      </div>
+      
+      <div class="ice-cream-actions">
+        <button class="btn secondary" id="tea-cancel">Отмена</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Tea type selection
+  modal.querySelectorAll('.tea-type-item').forEach(item => {
+    item.addEventListener('click', () => {
+      selectedTeaType = teaTypes.find(t => t.id === item.dataset.tea);
+      document.body.removeChild(modal);
+      
+      // Step 2: Show addons selection
+      showTeaAddonsStep2(selectedTeaType.name, callback);
+    });
+  });
+  
+  // Cancel button
+  modal.querySelector('#tea-cancel').addEventListener('click', () => {
+    document.body.removeChild(modal);
+    callback(null); // null means cancelled
+  });
+  
+  // Close on outside click
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      document.body.removeChild(modal);
+      callback(null);
+    }
+  });
+}
+
+// Step 2: Select addons for the chosen tea
+function showTeaAddonsStep2(teaTypeName, callback) {
+  const addons = [
+    { id: 'mint', name: 'Мята', emoji: '🌿', enabled: dishChainSettings.tea?.mint !== false },
+    { id: 'honey', name: 'Мёд', emoji: '🍯', enabled: dishChainSettings.tea?.honey !== false },
+    { id: 'thyme', name: 'Чабрец', emoji: '🌱', enabled: dishChainSettings.tea?.thyme !== false },
+    { id: 'sugar', name: 'Сахар', emoji: '🧂', enabled: dishChainSettings.tea?.sugar !== false },
+    { id: 'lemon', name: 'Лимон', emoji: '🍋', enabled: dishChainSettings.tea?.lemon !== false }
+  ].filter(addon => addon.enabled);
+  
+  if (addons.length === 0) {
+    callback({ teaType: teaTypeName, addons: [] });
+    return;
+  }
+  
+  let selectedAddons = [];
+  
+  const modal = document.createElement('div');
+  modal.className = 'rename-modal ice-cream-modal';
+  modal.innerHTML = `
+    <div class="rename-content ice-cream-content">
+      <div class="rename-title">Добавки к чаю</div>
+      <div class="ice-cream-dish">${teaTypeName}</div>
+      <div class="ice-cream-subtitle">Выберите добавки (можно несколько)</div>
+      
+      <div class="ice-cream-flavors juice-flavors">
+        ${addons.map(addon => `
+          <div class="juice-flavor-item tea-addon-item" data-addon="${addon.id}">
+            <span class="flavor-emoji">${addon.emoji}</span>
+            <span class="flavor-name">${addon.name}</span>
+            <span class="addon-check">✓</span>
+          </div>
+        `).join('')}
+      </div>
+      
+      <div class="ice-cream-actions">
+        <button class="btn secondary" id="tea-skip">Без добавок</button>
+        <button class="btn primary" id="tea-confirm">Подтвердить</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Addon selection (multiple)
+  modal.querySelectorAll('.tea-addon-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const addonId = item.dataset.addon;
+      const index = selectedAddons.indexOf(addonId);
+      
+      if (index > -1) {
+        selectedAddons.splice(index, 1);
+        item.classList.remove('selected');
+      } else {
+        selectedAddons.push(addonId);
+        item.classList.add('selected');
+      }
+    });
+  });
+  
+  // Confirm button
+  modal.querySelector('#tea-confirm').addEventListener('click', () => {
+    const result = {
+      teaType: teaTypeName,
+      addons: selectedAddons.map(id => addons.find(a => a.id === id).name)
+    };
+    document.body.removeChild(modal);
+    callback(result);
+  });
+  
+  // Skip button (no addons)
+  modal.querySelector('#tea-skip').addEventListener('click', () => {
+    document.body.removeChild(modal);
+    callback({ teaType: teaTypeName, addons: [] });
+  });
+  
+  // Close on outside click
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      document.body.removeChild(modal);
+      callback({ teaType: teaTypeName, addons: [] });
+    }
+  });
+}
+
+// Tartare addons selection modal (egg, croutons, bacon chips)
+function showTartareAddonsModal(dishName, callback) {
+  const addons = [
+    { id: 'egg', name: 'Яйцо перепелиное', emoji: '🥚', rkeeper: 'EGG', price: '50', enabled: dishChainSettings.tartare?.egg !== false },
+    { id: 'croutons', name: 'Крутоны из багета', emoji: '🍞', rkeeper: 'CROUTON', price: '80', enabled: dishChainSettings.tartare?.croutons !== false },
+    { id: 'bacon', name: 'Чипсы из бекона', emoji: '🥓', rkeeper: 'BACON', price: '100', enabled: dishChainSettings.tartare?.bacon !== false }
+  ].filter(addon => addon.enabled);
+  
+  if (addons.length === 0) {
+    callback([]);
+    return;
+  }
+  
+  let selectedAddons = [];
+  
+  const modal = document.createElement('div');
+  modal.className = 'rename-modal ice-cream-modal';
+  modal.innerHTML = `
+    <div class="rename-content ice-cream-content">
+      <div class="rename-title">Добавки к тар-тару</div>
+      <div class="ice-cream-dish">${dishName}</div>
+      <div class="ice-cream-subtitle">Выберите добавки (можно несколько)</div>
+      
+      <div class="ice-cream-flavors juice-flavors">
+        ${addons.map(addon => `
+          <div class="juice-flavor-item tea-addon-item" data-addon="${addon.id}" data-rkeeper="${addon.rkeeper}" data-price="${addon.price}">
+            <span class="flavor-emoji">${addon.emoji}</span>
+            <div class="addon-info">
+              <span class="flavor-name">${addon.name}</span>
+              <span class="addon-price">${addon.price} ₽</span>
+            </div>
+            <span class="addon-check">✓</span>
+          </div>
+        `).join('')}
+      </div>
+      
+      <div class="ice-cream-actions">
+        <button class="btn secondary" id="tartare-skip">Пропустить</button>
+        <button class="btn primary" id="tartare-confirm">Подтвердить</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Addon selection (multiple)
+  modal.querySelectorAll('.tea-addon-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const addonId = item.dataset.addon;
+      const index = selectedAddons.findIndex(a => a.id === addonId);
+      
+      if (index > -1) {
+        selectedAddons.splice(index, 1);
+        item.classList.remove('selected');
+      } else {
+        const addon = addons.find(a => a.id === addonId);
+        selectedAddons.push({
+          id: addonId,
+          name: addon.name,
+          rkeeper: item.dataset.rkeeper,
+          price: item.dataset.price
+        });
+        item.classList.add('selected');
+      }
+    });
+  });
+  
+  // Confirm button
+  modal.querySelector('#tartare-confirm').addEventListener('click', () => {
+    document.body.removeChild(modal);
+    callback(selectedAddons);
+  });
+  
+  // Skip button
+  modal.querySelector('#tartare-skip').addEventListener('click', () => {
+    document.body.removeChild(modal);
+    callback([]);
+  });
+  
+  // Close on outside click
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      document.body.removeChild(modal);
+      callback([]);
+    }
+  });
+}
+
+// Cocktail double portion modal
+function showCocktailDoubleModal(dishName, volume, callback) {
+  const modal = document.createElement('div');
+  modal.className = 'rename-modal ice-cream-modal';
+  modal.innerHTML = `
+    <div class="rename-content ice-cream-content">
+      <div class="rename-title">🍹 Двойная порция?</div>
+      <div class="ice-cream-dish">${dishName}</div>
+      <div class="cocktail-double-text">
+        <p>Наш <strong>${dishName}</strong> идёт объёмом <strong>${volume}л</strong></p>
+        <p style="margin-top: 12px;">Хотите сделать <strong>двойную порцию</strong>?</p>
+        <p style="margin-top: 8px; font-size: 14px; color: var(--muted-foreground);">Вдвое больше удовольствия! 🎉</p>
+      </div>
+      
+      <div class="ice-cream-actions">
+        <button class="btn secondary" id="cocktail-single">Обычная порция</button>
+        <button class="btn primary" id="cocktail-double">Двойная порция</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Double button
+  modal.querySelector('#cocktail-double').addEventListener('click', () => {
+    document.body.removeChild(modal);
+    callback(true);
+  });
+  
+  // Single button
+  modal.querySelector('#cocktail-single').addEventListener('click', () => {
+    document.body.removeChild(modal);
+    callback(false);
+  });
+  
+  // Close on outside click
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      document.body.removeChild(modal);
+      callback(false);
+    }
+  });
+}
+
+// Vitello tonnato + focaccia modal (choice between rosemary or tomato)
+function showVitelloFocacciaModal(dishName, callback) {
+  const modal = document.createElement('div');
+  modal.className = 'rename-modal ice-cream-modal';
+  modal.innerHTML = `
+    <div class="rename-content ice-cream-content">
+      <div class="rename-title">Дополнение к блюду</div>
+      <div class="ice-cream-dish">${dishName}</div>
+      <div class="ice-cream-subtitle">К Витело тоннато отлично подойдёт фокачча</div>
+      
+      <div class="ice-cream-flavors juice-flavors">
+        <div class="juice-flavor-item focaccia-item" data-focaccia="rosemary">
+          <span class="flavor-emoji">🌿</span>
+          <span class="flavor-name">Фокачча с розмарином</span>
+        </div>
+        <div class="juice-flavor-item focaccia-item" data-focaccia="tomato">
+          <span class="flavor-emoji">🍅</span>
+          <span class="flavor-name">Фокачча с томатами</span>
+        </div>
+      </div>
+      
+      <div class="ice-cream-actions">
+        <button class="btn secondary" id="vitello-skip">Без фокаччи</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Focaccia selection
+  modal.querySelectorAll('.focaccia-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const focacciaType = item.dataset.focaccia;
+      const focacciaName = focacciaType === 'rosemary' ? 'Фокачча с розмарином' : 'Фокачча с томатами';
+      document.body.removeChild(modal);
+      callback(focacciaName);
+    });
+  });
+  
+  // Skip button
+  modal.querySelector('#vitello-skip').addEventListener('click', () => {
+    document.body.removeChild(modal);
+    callback(null);
+  });
+  
+  // Close on outside click
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      document.body.removeChild(modal);
+      callback(null);
+    }
+  });
+}
+
+// Beer snacks selection modal - simplified and user-friendly
+function showBeerSnacksModal(dishName, callback) {
+  const snacks = [
+    // Картофель (только основные варианты)
+    { id: 'fries', name: 'Картофель фри', emoji: '🍟', rkeeper: '233', price: '250 рублей', category: 'Картофель', enabled: dishChainSettings.beer?.fries !== false },
+    { id: 'fries-parmesan', name: 'Фри с пармезаном', emoji: '🧀', rkeeper: '29', price: '300 рублей', category: 'Картофель', enabled: dishChainSettings.beer?.fries !== false },
+    // Креветки
+    { id: 'shrimp', name: 'Креветки в кляре', emoji: '🍤', rkeeper: '193', price: '350/400 рублей', category: 'Креветки', enabled: dishChainSettings.beer?.shrimp !== false },
+    { id: 'pilpil', name: 'Креветки пиль-пиль', emoji: '🦐', rkeeper: '1084', price: '350/400 рублей', category: 'Креветки', enabled: dishChainSettings.beer?.pilpil !== false },
+    // Другое
+    { id: 'croutons', name: 'Чесночные гренки', emoji: '🍞', rkeeper: '221', price: '350/400 рублей', category: 'Другое', enabled: dishChainSettings.beer?.croutons !== false }
+  ].filter(snack => snack.enabled);
+  
+  if (snacks.length === 0) {
+    callback([]);
+    return;
+  }
+  
+  // Group snacks by category
+  const grouped = snacks.reduce((acc, snack) => {
+    if (!acc[snack.category]) acc[snack.category] = [];
+    acc[snack.category].push(snack);
+    return acc;
+  }, {});
+  
+  let selectedSnacks = [];
+  
+  const modal = document.createElement('div');
+  modal.className = 'rename-modal ice-cream-modal';
+  modal.innerHTML = `
+    <div class="rename-content ice-cream-content">
+      <div class="rename-title">🍺 Закуски к пиву</div>
+      <div class="ice-cream-dish">${dishName}</div>
+      <div class="ice-cream-subtitle">Выберите закуски (можно несколько)</div>
+      
+      <div class="beer-snacks-container">
+        ${Object.entries(grouped).map(([category, items]) => `
+          <div class="beer-snacks-category">
+            <div class="category-label">${category}</div>
+            <div class="beer-snacks-items">
+              ${items.map(snack => `
+                <div class="beer-snack-card" data-snack="${snack.id}" data-rkeeper="${snack.rkeeper}" data-price="${snack.price}">
+                  <div class="snack-emoji">${snack.emoji}</div>
+                  <div class="snack-info">
+                    <div class="snack-name">${snack.name}</div>
+                    <div class="snack-price">${snack.price}</div>
+                  </div>
+                  <div class="snack-check">✓</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      
+      <div class="ice-cream-actions">
+        <button class="btn secondary" id="beer-skip">Без закусок</button>
+        <button class="btn primary" id="beer-confirm">Подтвердить</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Snack selection (multiple)
+  modal.querySelectorAll('.beer-snack-card').forEach(item => {
+    item.addEventListener('click', () => {
+      const snackId = item.dataset.snack;
+      const index = selectedSnacks.findIndex(s => s.id === snackId);
+      
+      if (index > -1) {
+        selectedSnacks.splice(index, 1);
+        item.classList.remove('selected');
+      } else {
+        const snack = snacks.find(s => s.id === snackId);
+        selectedSnacks.push({
+          id: snackId,
+          name: snack.name,
+          rkeeper: item.dataset.rkeeper,
+          price: item.dataset.price
+        });
+        item.classList.add('selected');
+      }
+    });
+  });
+  
+  // Confirm button
+  modal.querySelector('#beer-confirm').addEventListener('click', () => {
+    document.body.removeChild(modal);
+    callback(selectedSnacks);
+  });
+  
+  // Skip button
+  modal.querySelector('#beer-skip').addEventListener('click', () => {
+    document.body.removeChild(modal);
+    callback([]);
+  });
+  
+  // Close on outside click
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      document.body.removeChild(modal);
+      callback([]);
+    }
+  });
+}
+
+
+// Show custom chain modal - Modern Design
+function showCustomChainModal(triggerDish, chain, tableNumber, onComplete) {
+  const modal = document.createElement('div');
+  modal.className = 'rename-modal chain-modal';
+  
+  modal.innerHTML = `
+    <div class="chain-content">
+      <div class="chain-header">
+        <span class="chain-step-text">Дополнительные продажи</span>
+        <h2 class="chain-title">${chain.name}</h2>
+        <p class="chain-subtitle">${chain.description || 'Выберите дополнения (можно несколько)'}</p>
+      </div>
+      
+      <div class="chain-list-vertical" id="custom-chain-list">
+        ${chain.suggestedDishes.map((dish, index) => `
+          <button class="chain-list-btn" data-index="${index}">
+            <span class="chain-btn-emoji">${dish.isCustom ? '✨' : '🍽️'}</span>
+            <span class="chain-btn-name">${dish.name}</span>
+            <span class="chain-btn-price">${dish.price}</span>
+          </button>
+        `).join('')}
+      </div>
+      
+      <button class="chain-skip-btn" id="skip-custom-chain">Пропустить</button>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // State
+  const selectedDishes = new Set();
+  
+  // Dish selection handlers
+  modal.querySelectorAll('.chain-list-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const index = parseInt(btn.dataset.index);
+      
+      if (selectedDishes.has(index)) {
+        selectedDishes.delete(index);
+        btn.classList.remove('selected');
+      } else {
+        selectedDishes.add(index);
+        btn.classList.add('selected');
+      }
+    });
+  });
+  
+  // Skip button
+  modal.querySelector('#skip-custom-chain').addEventListener('click', () => {
+    // Add only trigger dish
+    if (!tableOrders[tableNumber]) {
+      tableOrders[tableNumber] = [];
+    }
+    
+    const triggerOrder = {
+      id: uuid(),
+      itemName: triggerDish.name,
+      quantity: 1,
+      price: triggerDish.price,
+      calculatedPrice: calculatePrice(triggerDish.price, triggerDish.category),
+      rkeeper: triggerDish.R_keeper,
+      createdAt: Date.now(),
+      addedAt: Date.now(),
+      category: triggerDish.category || '',
+      source: triggerDish.source || 'dishes'
+    };
+    
+    tableOrders[tableNumber].unshift(triggerOrder);
+    saveTableOrders();
+    
+    document.body.removeChild(modal);
+    if (onComplete) onComplete();
+  });
+  
+  // Auto-confirm when clicking outside or pressing skip
+  const confirmSelection = () => {
+    if (selectedDishes.size === 0) {
+      // No selection - just add trigger dish
+      modal.querySelector('#skip-custom-chain').click();
+      return;
+    }
+    
+    // Initialize table orders if not exists
+    if (!tableOrders[tableNumber]) {
+      tableOrders[tableNumber] = [];
+    }
+    
+    // Add trigger dish
+    const triggerOrder = {
+      id: uuid(),
+      itemName: triggerDish.name,
+      quantity: 1,
+      price: triggerDish.price,
+      calculatedPrice: calculatePrice(triggerDish.price, triggerDish.category),
+      rkeeper: triggerDish.R_keeper,
+      createdAt: Date.now(),
+      addedAt: Date.now(),
+      category: triggerDish.category || '',
+      source: triggerDish.source || 'dishes'
+    };
+    
+    tableOrders[tableNumber].unshift(triggerOrder);
+    const triggerOrderId = triggerOrder.id;
+    
+    // Add selected dishes as linked items
+    selectedDishes.forEach(index => {
+      const dish = chain.suggestedDishes[index];
+      
+      // If it's a custom dish, use the stored data
+      // If it's from menu, try to find it in db.dishes
+      let dishData = dish;
+      
+      if (!dish.isCustom) {
+        // Try to find in db.dishes for more complete data
+        const dbDish = db.dishes.find(d => d.R_keeper === dish.rkeeper);
+        if (dbDish) {
+          dishData = {
+            name: dbDish.name,
+            rkeeper: dbDish.R_keeper,
+            price: dbDish.price,
+            category: dbDish.category
+          };
+        }
+      }
+      
+      const linkedOrder = {
+        id: uuid(),
+        itemName: dishData.name,
+        quantity: 1,
+        price: dishData.price,
+        calculatedPrice: calculatePrice(dishData.price, dishData.category || ''),
+        rkeeper: dishData.rkeeper,
+        linkedTo: triggerOrderId,
+        addonType: 'extra',
+        createdAt: Date.now(),
+        addedAt: Date.now(),
+        category: dishData.category || ''
+      };
+      
+      tableOrders[tableNumber].push(linkedOrder);
+    });
+    
+    saveTableOrders();
+    
+    document.body.removeChild(modal);
+    if (onComplete) onComplete();
+  };
+  
+  // Close on outside click - auto confirm
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      confirmSelection();
+    }
+  });
+}
